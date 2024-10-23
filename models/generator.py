@@ -1,6 +1,13 @@
-from __init__ import *
-from settings import *
-from block import Block
+from models.__init__ import *
+from models.settings import *
+from models.block import Block
+
+# import torch
+# import torch.nn as nn
+# import torch.nn.functional as F
+
+# from block import Block
+
 
 
 class UNETGenerator(nn.Module):
@@ -61,6 +68,6 @@ class UNETGenerator(nn.Module):
     
 
 # if __name__ == "__main__":
-#     model = UNETGenerator(3, 3)
+#     model = UNETGenerator(3)
 #     test_tensor = torch.randn(1, 3, 256, 256)
 #     print(model(test_tensor).shape)

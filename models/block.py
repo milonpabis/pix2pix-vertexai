@@ -1,5 +1,8 @@
-from __init__ import *
-from settings import *
+from models.__init__ import *
+from models.settings import *
+
+# from __init__ import *
+# from settings import *
 
 
 class Block(nn.Module):

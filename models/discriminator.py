@@ -1,6 +1,6 @@
-from __init__ import *
-from settings import *
-from block import Block
+from models.__init__ import *
+from models.settings import *
+from models.block import Block
 
 
 class PatchGAN70x70(nn.Module):
