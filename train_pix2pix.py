@@ -19,8 +19,9 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=LEARNING_RATE, help="adam: learning rate")
     parser.add_argument("--b1", type=float, default=BETA1, help="adam: decay of first order momentum of gradient")
     parser.add_argument("--b2", type=float, default=BETA2, help="adam: decay of first order momentum of gradient")
-    parser.add_argument("--dataset_path", type=str, default="data/building_facade/train", help="root path of the dataset")
-    parser.add_argument("--checkpoint_interval", type=int, default=5, help="interval between model checkpoints")
+    parser.add_argument("--train_path", type=str, default="data/building_facade/train", help="root path of the dataset")
+    parser.add_argument("--val_path", type=str, default="data/building_facade/test", help="root path of the dataset")
+    parser.add_argument("--checkpoint_interval", type=int, default=30, help="interval between model checkpoints")
     parser.add_argument("--checkpoint_path", type=str, default="checkpoints", help="path to save checkpoints")
     parser.add_argument("--log_path", type=str, default="run/pix2pix", help="path to save logs")
     parser.add_argument("--results_path", type=str, default="results", help="path to save results")
@@ -41,7 +42,6 @@ if __name__ == "__main__":
     if not os.path.exists(opt.checkpoint_path):
         os.makedirs(opt.checkpoint_path, exist_ok=True)
 
-    logger = Logger(opt.log_path, opt.results_path, opt.checkpoint_path)
 
     generator = UNETGenerator(3).to(device)
     discriminator = PatchGAN70x70(3).to(device)
@@ -65,8 +65,13 @@ if __name__ == "__main__":
     L1 = nn.L1Loss()
     BCE = nn.BCEWithLogitsLoss()
 
-    datahandler = DataHandler(opt.dataset_path)
+    datahandler = DataHandler(opt.train_path)
     dataloader = DataLoader(datahandler, batch_size=opt.batch_size, shuffle=True)
+
+    datahandler_val = DataHandler(opt.val_path)
+    dataloader_val = DataLoader(datahandler_val, batch_size=opt.batch_size, shuffle=True)
+
+    logger = Logger(opt.log_path, opt.results_path, opt.checkpoint_path, dataloader_val)
 
     generator_scaler = torch.GradScaler()
     discriminator_scaler = torch.GradScaler()
@@ -115,7 +120,7 @@ if __name__ == "__main__":
             if idx % 100 == 0 and idx != 0:
                 logger.log_scalar("d_loss", d_loss.item(), idx, epoch)
                 logger.log_scalar("g_loss", g_loss.item(), idx, epoch)
-                logger.log_image("result", x, y_fake, idx, epoch)
+                logger.log_image("result", generator,  idx, epoch)
             
         # loop.set_postfix(d_loss=d_loss.item(), g_loss=g_loss.item())
 
