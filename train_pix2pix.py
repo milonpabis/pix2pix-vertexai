@@ -27,6 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("--results_path", type=str, default="results", help="path to save results")
     parser.add_argument("--load_model_path", type=str, default="", help="path to load model from")
     parser.add_argument("--L1lambda", type=float, default=100, help="weight for L1 loss")
+    parser.add_argument("--transform_type", type=str, default="augment", help="augment data")
     opt = parser.parse_args()
 
     if torch.cuda.is_available():
@@ -65,10 +66,10 @@ if __name__ == "__main__":
     L1 = nn.L1Loss()
     BCE = nn.BCEWithLogitsLoss()
 
-    datahandler = DataHandler(opt.train_path)
+    datahandler = DataHandler(opt.train_path, transform_sequence=opt.transform_type)
     dataloader = DataLoader(datahandler, batch_size=opt.batch_size, shuffle=True)
 
-    datahandler_val = DataHandler(opt.val_path)
+    datahandler_val = DataHandler(opt.val_path, transform_sequence="standard")
     dataloader_val = DataLoader(datahandler_val, batch_size=opt.batch_size, shuffle=True)
 
     logger = Logger(opt.log_path, opt.results_path, opt.checkpoint_path, dataloader_val)
