@@ -28,7 +28,8 @@ class Block(nn.Module):
             up_sample = nn.ConvTranspose2d(in_ch, out_ch, kernel_size=KERNEL_SIZE, stride=stride, padding=PADDING)
 
             self.conv = down_sample if down else up_sample
-            self.norm = nn.InstanceNorm2d(out_ch, affine=True)
+            # self.norm = nn.InstanceNorm2d(out_ch, affine=True)
+            self.norm = nn.BatchNorm2d(out_ch, affine=True)
             self.activation = nn.LeakyReLU(LEAKY_RELU_SLOPE) if activation_fun == "leaky" else nn.ReLU()
             self.dropout = nn.Dropout(DROPOUT_RATE)
 

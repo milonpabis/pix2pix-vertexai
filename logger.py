@@ -25,7 +25,7 @@ class Logger:
         with torch.no_grad():
             with torch.autocast("cuda"):
                 y_fake = generator(x)
-            img = torch.cat((x, y, y_fake), 0)
+            img = torch.cat((x, y, y_fake), 0) * 0.5 + 0.5
             save_image(img, f"{self.log_image_dir}/{tag}_{epoch}_{batch}.png")
         generator.train()
 

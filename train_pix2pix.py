@@ -47,11 +47,11 @@ if __name__ == "__main__":
     generator = UNETGenerator(3).to(device)
     discriminator = PatchGAN70x70(3).to(device)
 
-    generator.apply(weights_init)
-    discriminator.apply(weights_init)
+    weights_init(generator)
+    weights_init(discriminator)
 
-    gen_opt = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-    disc_opt = torch.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+    gen_opt = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2), weight_decay=1e-5)
+    disc_opt = torch.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2), weight_decay=1e-5)
 
     # Load checkpoints if available
     if len(opt.load_model_path):
@@ -63,8 +63,8 @@ if __name__ == "__main__":
         start_epoch = torch.load(state_dict["epoch"])
         print(f"Resuming training from epoch {opt.epoch}")
 
-    L1 = nn.L1Loss()
-    BCE = nn.BCEWithLogitsLoss()
+    L1 = nn.L1Loss().to(device)
+    BCE = nn.BCEWithLogitsLoss().to(device)
 
     datahandler = DataHandler(opt.train_path, transform_sequence=opt.transform_type)
     dataloader = DataLoader(datahandler, batch_size=opt.batch_size, shuffle=True)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # saving the model (checkpoints)
     # option to resume training with checkpoints (also store optimizer states and epoch number)
 
-    for epoch in range(opt.epoch+1, opt.num_epochs):    # epochs
+    for epoch in range(opt.epoch+1, opt.num_epochs+1):    # epochs
         loop = tqdm(dataloader, leave=True)
 
         for idx, (x, y) in enumerate(loop): # batches
@@ -121,6 +121,10 @@ if __name__ == "__main__":
             if idx % 100 == 0 and idx != 0:
                 logger.log_scalar("d_loss", d_loss.item(), idx, epoch)
                 logger.log_scalar("g_loss", g_loss.item(), idx, epoch)
+                logger.log_scalar("l1_loss", l1.item(), idx, epoch)
+                logger.log_scalar("d_fake_loss", d_fake_loss.item(), idx, epoch)
+                logger.log_scalar("d_real_loss", d_real_loss.item(), idx, epoch)
+                logger.log_scalar("g_fake_loss", g_fake_loss.item(), idx, epoch)
                 logger.log_image("result", generator,  idx, epoch)
             
         # loop.set_postfix(d_loss=d_loss.item(), g_loss=g_loss.item())
