@@ -1,5 +1,6 @@
 *pycache*
 *checkpoints*
-*data*
 *results*
 *run*
+*.json
+data/*

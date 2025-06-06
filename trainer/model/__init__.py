@@ -1,7 +1,5 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
+from model.discriminator import PatchGAN70x70
+from model.generator import UNETGenerator
 
 # notes based on:
 # https://arxiv.org/pdf/1611.07004

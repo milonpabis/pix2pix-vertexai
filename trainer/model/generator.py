@@ -1,12 +1,7 @@
-from models.__init__ import *
-from models.settings import *
-from models.block import Block
+import torch
+import torch.nn as nn
 
-# import torch
-# import torch.nn as nn
-# import torch.nn.functional as F
-
-# from block import Block
+from model.block import Block
 
 
 

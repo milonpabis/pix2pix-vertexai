@@ -1,8 +1,9 @@
-from models.__init__ import *
-from models.settings import *
+import torch
+import torch.nn as nn
 
-# from __init__ import *
-# from settings import *
+from model.settings import (
+    KERNEL_SIZE, PADDING, LEAKY_RELU_SLOPE, DROPOUT_RATE
+)
 
 
 class Block(nn.Module):

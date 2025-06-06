@@ -1,6 +1,8 @@
-from models.__init__ import *
-from models.settings import *
-from models.block import Block
+import torch
+import torch.nn as nn
+
+from model.block import Block
+
 
 
 class PatchGAN70x70(nn.Module):
