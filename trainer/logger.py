@@ -15,12 +15,15 @@ class Logger:
             log_image_dir: str, 
             checkpoint_dir: str, 
             validation_data_handler,
-            credentials_path: str = None,
+            credentials: service_account.Credentials = None,
             bucket_name: str = None
     ):
         try:
-            credentials = service_account.Credentials.from_service_account_file(credentials_path)
-            self.client = gcs.Client(credentials=credentials)
+            if credentials:
+                self.client = gcs.Client(credentials=credentials)
+            else:
+                self.client = gcs.Client()
+                
             self.bucket = self.client.bucket(bucket_name=bucket_name)
         except Exception as e:
             print(e)
@@ -69,7 +72,6 @@ class Logger:
             },
             file_name
         )
-
 
         self._save_to_gcs(file_name)
 
