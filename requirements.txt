@@ -3,3 +3,4 @@ google-auth==2.40.3
 pillow==11.1.0
 albumentations==2.0.8
 tqdm==4.67.1
+tensorboard==2.19.0

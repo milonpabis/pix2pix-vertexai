@@ -6,21 +6,25 @@ def weights_init(m):
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
 
-def download_dataset(bucket_name: str, prefix: str, dest_dir: str):
+def download_dataset(bucket_name: str, prefix: str, dest_dir: str = "data", credentials = None):
     from google.cloud import storage
-    from google.oauth2 import service_account
     import os
 
-    credentials = service_account.Credentials.from_service_account_file(
-        "sandbox-project-462110-215ba3072b18.json"
-    )
-    client = storage.Client(credentials=credentials)
-    bucket = client.bucket(bucket_name)
+    if credentials:
+        client = storage.Client(credentials=credentials)
+    else:
+        client = storage.Client()
+    print("FETCHING THE DATA") # slow version -> placeholder
 
-    blobs = client.list_blobs(bucket_name, prefix=prefix)
-    for blob in blobs:
-        rel_path = os.path.relpath(blob.name, prefix)
-        dest_path = os.path.join(dest_dir, rel_path)
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-        blob.download_to_filename(dest_path)
-        print(f"Downloaded {blob.name} to {dest_path}")
+    def fetch_data(subset: str):
+        subset_prefix = os.path.join(prefix, subset)
+        blobs = client.list_blobs(bucket_name, prefix=subset_prefix)
+        for blob in blobs:
+            rel_path = os.path.relpath(blob.name, subset_prefix)
+            dest_path = os.path.join(dest_dir, subset, rel_path)
+            os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+            blob.download_to_filename(dest_path)
+            print(f"Downloaded {blob.name} to {dest_path}")
+
+    fetch_data("train")
+    fetch_data("val")

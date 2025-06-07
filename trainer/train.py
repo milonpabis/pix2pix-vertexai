@@ -164,18 +164,30 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint_interval", type=int, default=30, help="interval between model checkpoints")
     parser.add_argument("--checkpoint_path", type=str, default="checkpoints", help="path to save checkpoints")
     parser.add_argument("--log_path", type=str, default="run/pix2pix", help="path to save logs")
-    parser.add_argument("--results_path", type=str, default=f"results/{dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}", help="path to save results")
+    parser.add_argument("--results_path", type=str, default=f"results/{dt.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}", help="path to save results")
     parser.add_argument("--load_model_path", type=str, default="", help="path to load model from")
     parser.add_argument("--L1lambda", type=float, default=100, help="weight for L1 loss")
     parser.add_argument("--transform_type", type=str, default="augment", help="augment data")
     parser.add_argument("--target_side", type=str, default="left", help="which side of the photo is a target")
     parser.add_argument("--execution_type", type=str, default="local", help="cloud/local")
+    parser.add_argument("--bucket_data_prefix", type=str, default="data", help="prefix on bucket that consists of train and val folders with the data")
     parser.add_argument("--bucket_name", type=str, help="gcs bucket name", required=True)
     parser.add_argument("--service_account_json_b64", type=str, help="base64 encoded service account json file content")
     opt = parser.parse_args()
 
-    if opt.execution_type == "cloud":
+    CONTAINER_TEST = True # for testing container execution locally
+    if opt.execution_type == "cloud" or CONTAINER_TEST:
         from utils import download_dataset
-        download_dataset(opt.bucket_name, "data_maps/val", "data/val")
+        from google.oauth2 import service_account
+        
+        if CONTAINER_TEST: # i need to authenticate locally (because it's not inside Google environment)
+            if not opt.service_account_json_b64:
+                raise Exception("Specify the --service_account_json_b64!")
+            service_account_json = json.loads(base64.b64decode(opt.service_account_json_b64))
+            credentials = service_account.Credentials.from_service_account_info(service_account_json)
+        else:
+            credentials = None # if it's on gcp there is no need to authenticate twice
+        
+        download_dataset(opt.bucket_name, opt.bucket_data_prefix, "data", credentials)
     
     main(opt)

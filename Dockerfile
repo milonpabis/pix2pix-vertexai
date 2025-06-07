@@ -4,6 +4,9 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY trainer .
+# COPY data data # testing
 
-ENTRYPOINT ["python" "trainer/train.py"]
+COPY trainer trainer
+
+ENTRYPOINT ["python", "trainer/train.py"]
+
