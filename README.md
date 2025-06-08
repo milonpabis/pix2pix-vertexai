@@ -44,19 +44,11 @@ There is a way to execute the job locally as a Docker container, you just need t
 
 5. In case of local execution, run the docker container with neccessary arguments:
 
-<<<<<<< HEAD
-    ```sh
-    docker --gpus all run -d <image-name>
-        --bucket_name=<bucket-name>
-        --service_account_json_b64=<sa_json_b64>
-    ```
-=======
    ```sh
         docker --gpus all run -d <image-name>
             --bucket_name=<bucket-name>
             --service_account_json_b64=<sa_json_b64>
    ```
->>>>>>> 5376b3b2fc29443cc62066d636c8cdebd7b1bb0d
 
 ### Specifying the parameters
 ---
