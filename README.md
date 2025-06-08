@@ -34,20 +34,29 @@ There is a way to execute the job locally as a Docker container, you just need t
 
 3. Prepare your training and validation dataset with a prefix specified with **--bucket_data_prefix** consisting of **train/** and **val/** subdirectories that contain the images merged horizontally, i.e.:
 
-<img src="images/sample_data.jpg">
+    <img src="images/sample_data.jpg">
 
-You can specify which side is a target with **--target_side**
+    You can specify which side is a target with **--target_side**
 <br>
 
 4. For cloud execution, follow the steps from the **train_submit.ipynb** in order to submit the job on Vertex AI.
 <br>
+
 5. In case of local execution, run the docker container with neccessary arguments:
 
+<<<<<<< HEAD
     ```sh
     docker --gpus all run -d <image-name>
         --bucket_name=<bucket-name>
         --service_account_json_b64=<sa_json_b64>
     ```
+=======
+   ```sh
+        docker --gpus all run -d <image-name>
+            --bucket_name=<bucket-name>
+            --service_account_json_b64=<sa_json_b64>
+   ```
+>>>>>>> 5376b3b2fc29443cc62066d636c8cdebd7b1bb0d
 
 ### Specifying the parameters
 ---
