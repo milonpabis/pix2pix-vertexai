@@ -87,3 +87,11 @@ Here are some sample results obtained from the training on a popular dataset wit
 <img src="images/val2.png">
 
 <img src="images/val3.png">
+
+
+### Results
+---
+
+Trained model is saved as checkpoint on the same bucket that contains the dataset, also every 500 iterations, the validation output is produced and saved on the bucket as well:
+
+<img src="images/logs.png">
