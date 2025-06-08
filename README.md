@@ -42,6 +42,7 @@ You can specify which side is a target with **--target_side**
 4. For cloud execution, follow the steps from the **train_submit.ipynb** in order to submit the job on Vertex AI.
 <br>
 5. In case of local execution, run the docker container with neccessary arguments:
+
     ```sh
     docker --gpus all run -d <image-name>
         --bucket_name=<bucket-name>
